@@ -1,0 +1,15 @@
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\SimpleHttpServer.exe
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\SimpleHttpServer.deps.json
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\SimpleHttpServer.runtimeconfig.json
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\SimpleHttpServer.runtimeconfig.dev.json
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\SimpleHttpServer.dll
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\SimpleHttpServer.pdb
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.csprojAssemblyReference.cache
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.AssemblyInfoInputs.cache
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.AssemblyInfo.cs
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.csproj.CoreCompileInputs.cache
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.dll
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.pdb
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.genruntimeconfig.cache
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\huynhcam.tuan\source\repos\SimpleHttpServer\SimpleHttpServer\obj\Debug\netcoreapp3.1\SimpleHttpServer.csproj.CopyComplete
