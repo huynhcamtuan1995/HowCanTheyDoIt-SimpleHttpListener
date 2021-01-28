@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Reflection;
 
 namespace SimpleHttpServer
 {
@@ -24,5 +25,20 @@ namespace SimpleHttpServer
     public class RouteResult
     {
         public object Handler { get; set; }
+    }
+
+    public class RouteInfo
+    {
+        public Type Action { get; set; }
+
+        public MethodInfo Method { get; set; }
+
+        public HttpMethod HttpVers { get; set; }
+
+        public ParameterInfo[] ParameterInfos { set; get; }
+
+        public string[] Segments { get; set; }
+
+        public string AbsoluteUrl { get; set; }
     }
 }

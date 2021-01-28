@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "HvhYIUC/e9/J7bAtsj+2reW777xGDyByZ15AOWwDZaf3Nf4fnb7wHgRDTs88lGIYQsgxBHqvsjBnmhJg0Buf4A==",
+  "dgSpecHash": "/ocuKZkjdV+JnFsisHH8l0CUI9DTXEMSxIDc9uWl4deSuR5bIqp1HHl7iA0AK+luydWIahNCZ7XVO9w/K+NIkA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\huynhcam.tuan\\source\\repos\\SimpleHttpServer\\SimpleHttpServer\\SimpleHttpServer.csproj",
+  "projectFilePath": "D:\\environment\\source\\httpServerListener\\SimpleHttpServer\\SimpleHttpServer.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\huynhcam.tuan\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
+    "C:\\Users\\HK\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512"
   ],
   "logs": []
 }

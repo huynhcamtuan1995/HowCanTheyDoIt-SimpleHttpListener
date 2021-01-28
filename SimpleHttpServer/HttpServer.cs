@@ -55,29 +55,11 @@ namespace SimpleHttpServer
                 //}
 
                 //todo
-                await ProcessRequest(ctx);
 
                 // Write out to the response stream (asynchronously), then close it
                 await ParseContext.WriteData(req, resp);
                 resp.Close();
             }
-        }
-
-        public static async Task<bool> ProcessRequest(HttpListenerContext context)
-        {
-            // Setup Chain of Responsibility for route processing
-            RouteActioner routeActioner = new RouteActioner();
-
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            List<Type> handlers = assembly.GetTypes()
-                .Where(type => type.GetInterfaces()
-                    .Contains(typeof(IRouteHandler)))
-                .ToList();
-
-
-            await routeActioner.ActionRequest(context, handlers);
-
-            return true;
         }
 
         public static void Start()
@@ -89,7 +71,8 @@ namespace SimpleHttpServer
             Console.WriteLine("Listening for connections on {0}", url);
 
             //Register refection
-            Refection.RegisterFunction();
+            Refection.RegisterFunctions();
+            Refection.RegisterRoutes();
 
             // Handle requests
             Task listenTask = HandleIncomingConnections();

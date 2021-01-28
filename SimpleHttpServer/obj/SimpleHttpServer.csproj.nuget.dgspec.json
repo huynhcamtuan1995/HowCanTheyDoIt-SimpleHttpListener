@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\huynhcam.tuan\\source\\repos\\SimpleHttpServer\\SimpleHttpServer\\SimpleHttpServer.csproj": {}
+    "D:\\environment\\source\\httpServerListener\\SimpleHttpServer\\SimpleHttpServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\huynhcam.tuan\\source\\repos\\SimpleHttpServer\\SimpleHttpServer\\SimpleHttpServer.csproj": {
+    "D:\\environment\\source\\httpServerListener\\SimpleHttpServer\\SimpleHttpServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\huynhcam.tuan\\source\\repos\\SimpleHttpServer\\SimpleHttpServer\\SimpleHttpServer.csproj",
+        "projectUniqueName": "D:\\environment\\source\\httpServerListener\\SimpleHttpServer\\SimpleHttpServer.csproj",
         "projectName": "SimpleHttpServer",
-        "projectPath": "C:\\Users\\huynhcam.tuan\\source\\repos\\SimpleHttpServer\\SimpleHttpServer\\SimpleHttpServer.csproj",
-        "packagesPath": "C:\\Users\\huynhcam.tuan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\huynhcam.tuan\\source\\repos\\SimpleHttpServer\\SimpleHttpServer\\obj\\",
+        "projectPath": "D:\\environment\\source\\httpServerListener\\SimpleHttpServer\\SimpleHttpServer.csproj",
+        "packagesPath": "C:\\Users\\HK\\.nuget\\packages\\",
+        "outputPath": "D:\\environment\\source\\httpServerListener\\SimpleHttpServer\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\huynhcam.tuan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\HK\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -63,7 +60,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

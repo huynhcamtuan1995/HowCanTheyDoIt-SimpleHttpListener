@@ -16,53 +16,39 @@ namespace SimpleHttpServer
     }
 
 
-    public class RouteActioner
+    public static class RouteActioner
     {
-
-
-        MethodActioner restMethodActioner = new MethodActioner();
-        public async Task<bool> ActionRequest(HttpListenerContext context, IList<Type> handlers)
+        public static bool IsEmptyMethodClass(Type type, out MethodInfo[] methodInfos)
         {
-            return await Task.Run(async () =>
+            methodInfos = (MethodInfo[])type.GetMethods().Where(x => x.DeclaringType.Name == type.Name).ToArray();
+            if (methodInfos.Count() == 0)
             {
-                object matchingHandler = null;
-
-                //1. try and find the handler who has same base address as the request url
-                //   if we find a handler, go to step 2, otherwise try successor
-                //2. find out what verb is being used
-
-                var httpMethod = context.Request.HttpMethod;
-                var url = context.Request.RawUrl;
-                bool result = false;
-
-                var routeResult = await restMethodActioner.FindHandler(
-                    typeof(IRouteHandler), context, handlers);
-
-                if (routeResult.Handler != null)
-                {
-                    //handler is using RouteBase, so fair chance it is a VerbHandler
-                    //var genericArgs = GetDynamicRouteHandlerGenericArgs(routeResult.Handler.GetType());
-
-                    //MethodInfo method = typeof(ClassActions).GetMethod("DispatchToHandler",
-                    //    BindingFlags.NonPublic | BindingFlags.Instance);
-
-                    //MethodInfo generic = method.MakeGenericMethod(genericArgs[0], genericArgs[1]);
-                    //result = await (Task<bool>)generic.Invoke(this, new object[]
-                    //{
-                    //    context, routeResult.Handler, httpMethod, url
-                    //});
-
-                    //return result;
-
-                    return false;
-
-                }
-
-                //result = await this.Successor.ActionRequest(context, handlers);
-                //return result;
-                return false;
-            });
+                return true;
+            }
+            return false;
         }
+
+        public static void BuildRouter(string baseRoute, MethodInfo method, out RouteInfo routeInfo, RouteAttribute attribute = null)
+        {
+            routeInfo = new RouteInfo();
+            string restPart = attribute != null && !string.IsNullOrWhiteSpace(attribute.Route)
+                ? attribute.Route
+                : method.Name;
+
+
+
+            string absoluteUrl = $"/{baseRoute}/{restPart}".Replace("//", "/");
+            routeInfo.AbsoluteUrl = absoluteUrl;
+            routeInfo.Segments = absoluteUrl.Split('/');
+            routeInfo.Action = method.DeclaringType;
+            routeInfo.Method = method;
+            routeInfo.HttpVers = attribute != null
+                ? attribute.HttpVerb
+                : HttpMethod.GET;
+            routeInfo.ParameterInfos = method.GetParameters();
+
+        }
+
     }
 
     public class MethodActioner
@@ -111,39 +97,14 @@ namespace SimpleHttpServer
                 {
                     if (handler.GetInterfaces().Any(x => x.Name == handlerTypeRequired.Name))
                     {
-                        RouteBaseAttribute[] routeBase = (RouteBaseAttribute[])handler.GetCustomAttributes(typeof(RouteBaseAttribute));
+                        var routeBase = ((RouteBaseAttribute[])handler
+                            .GetCustomAttributes(typeof(RouteBaseAttribute)))
+                            .ToList();
 
-                        bool isBaseMatch = false;
-                        //isBaseMatch = routeBase.Any(x =>
-                        //    url.StartsWith(x.UrlBase, StringComparison.CurrentCultureIgnoreCase)) ||
-                        //    url.StartsWith(Regex.Replace(handler.Name, @"(Action)\z", string.Empty),
-                        //        StringComparison.CurrentCultureIgnoreCase);
-
-                        isBaseMatch = routeBase.Any((x) =>
-                        {
-                            if (url.StartsWith(x.UrlBase, StringComparison.CurrentCultureIgnoreCase))
-                            {
-
-                                return true;
-                            }
-                            return false;
-                        });
-
-
-
-
-
-                        bool isUrlMatch = false;
-                        isUrlMatch = routeBase.Any(x =>
-                            IsUrlMatch(x.UrlBase, url, httpMethod)) ||
-                            IsUrlMatch(Regex.Replace(handler.Name, @"(Action)\z", string.Empty), url, httpMethod);
-
-
-                        if (isBaseMatch && isUrlMatch)
-                        {
-                            result.Handler = handler;
-                            break;
-                        }
+                        bool isBaseMatch = routeBase.Find(x =>
+                            url.StartsWith(x.UrlBase, StringComparison.CurrentCultureIgnoreCase)) != null ||
+                            url.StartsWith(Regex.Replace(handler.Name, @"(Action)\z", string.Empty),
+                                StringComparison.CurrentCultureIgnoreCase);
 
                     }
                 }
