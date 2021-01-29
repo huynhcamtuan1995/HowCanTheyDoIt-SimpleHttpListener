@@ -55,6 +55,7 @@ namespace SimpleHttpServer
                 //}
 
                 //todo
+                Refection.ProgressRequest(req);
 
                 // Write out to the response stream (asynchronously), then close it
                 await ParseContext.WriteData(req, resp);

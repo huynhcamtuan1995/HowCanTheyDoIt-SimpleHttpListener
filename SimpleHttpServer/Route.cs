@@ -35,18 +35,30 @@ namespace SimpleHttpServer
                 ? attribute.Route
                 : method.Name;
 
+            string absoluteUrl = Regex.Replace($"/{baseRoute}/{restPart}", "(/)+", "/");
+            string[] segmentUrl = absoluteUrl.Split('/', StringSplitOptions.RemoveEmptyEntries);
 
+            MatchCollection matches = Regex.Matches(absoluteUrl,
+                @"(?<={)(?<name>[a-zA-Z0-9_-]+)(?=})",
+                RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
-            string absoluteUrl = $"/{baseRoute}/{restPart}".Replace("//", "/");
-            routeInfo.AbsoluteUrl = absoluteUrl;
-            routeInfo.Segments = absoluteUrl.Split('/');
+            if (matches.Count > 0)
+            {
+                absoluteUrl = $"{Regex.Replace(absoluteUrl, @"{(?<name>[a-zA-Z0-9_-]+)}", @"([a-zA-Z0-9_-]+)")}";
+                //var data = Regex.Matches("/api/param1/param2", absoluteUrl);
+
+                var param = method.GetParameters()
+                    .Select(x => x.Name)
+                    .ToArray();
+                routeInfo.ParameterInfos = segmentUrl.Select(x => Array.FindIndex(param, p => $"{{{p}}}" == x)).ToArray();
+            }
+
+            routeInfo.AbsoluteUrl = $"^{absoluteUrl}$";
             routeInfo.Action = method.DeclaringType;
             routeInfo.Method = method;
             routeInfo.HttpVers = attribute != null
                 ? attribute.HttpVerb
                 : HttpMethod.GET;
-            routeInfo.ParameterInfos = method.GetParameters();
-
         }
 
     }
@@ -55,62 +67,8 @@ namespace SimpleHttpServer
     {
         public bool IsUrlMatch(string baseRoute, string requestUrl, string httpMethod)
         {
-            bool result = false;
-            string restToken = baseRoute.Replace(@"/", "");
-            string pattern = string.Format("^(\\/{0}\\/)([1-9]+[0-9]*)$", restToken);
-            Regex regEx = new Regex(pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
-            Match m = regEx.Match(requestUrl);
-
-
-            if (httpMethod == "POST")
-            {
-                result = requestUrl == baseRoute;
-            }
-
-            if (httpMethod == "GET")
-            {
-                bool validRoute1 = requestUrl == baseRoute;
-                bool validRoute2 = m.Success;
-                result = validRoute1 || validRoute2;
-            }
-
-            if (httpMethod == "PUT" || httpMethod == "DELETE")
-            {
-                bool validRoute1 = requestUrl == baseRoute;
-                bool validRoute2 = m.Success;
-                result = validRoute1 || validRoute2;
-            }
-
-            return result;
+            return false;
         }
 
-        public async Task<RouteResult> FindHandler(Type handlerTypeRequired,
-            HttpListenerContext context, IList<Type> handlers)
-        {
-
-            return await Task.Run(async () =>
-            {
-                var httpMethod = context.Request.HttpMethod;
-                var url = context.Request.RawUrl.TrimStart('/');
-                RouteResult result = new RouteResult();
-                foreach (var handler in handlers)
-                {
-                    if (handler.GetInterfaces().Any(x => x.Name == handlerTypeRequired.Name))
-                    {
-                        var routeBase = ((RouteBaseAttribute[])handler
-                            .GetCustomAttributes(typeof(RouteBaseAttribute)))
-                            .ToList();
-
-                        bool isBaseMatch = routeBase.Find(x =>
-                            url.StartsWith(x.UrlBase, StringComparison.CurrentCultureIgnoreCase)) != null ||
-                            url.StartsWith(Regex.Replace(handler.Name, @"(Action)\z", string.Empty),
-                                StringComparison.CurrentCultureIgnoreCase);
-
-                    }
-                }
-                return result;
-            });
-
-        }
     }
 }

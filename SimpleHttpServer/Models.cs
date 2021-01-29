@@ -35,9 +35,9 @@ namespace SimpleHttpServer
 
         public HttpMethod HttpVers { get; set; }
 
-        public ParameterInfo[] ParameterInfos { set; get; }
+        public int[] ParameterInfos { set; get; }
 
-        public string[] Segments { get; set; }
+        public string[] ParamSegments { get; set; }
 
         public string AbsoluteUrl { get; set; }
     }

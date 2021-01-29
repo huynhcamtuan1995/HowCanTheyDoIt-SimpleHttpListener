@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -38,8 +39,40 @@ namespace SimpleHttpServer
             }
         }
 
-        public static void ProgressRequest()
+        public static void ProgressRequest(HttpListenerRequest request)
         {
+            //Match matche;
+            //RouteInfo routeInfo = RouteDictionary.FirstOrDefault(x => 
+            //    {
+            //        matche = Regex.Match(request.Url.AbsolutePath, x.Key);
+            //        return matche.Success;
+            //    }).Value;
+
+            RouteInfo routeInfo = RouteDictionary.FirstOrDefault(x => Regex.IsMatch(request.Url.AbsolutePath, x.Key)).Value;
+
+            if (routeInfo != null && request.HttpMethod == routeInfo.HttpVers.ToString())
+            {
+                try
+                {
+                    //style: with out invoke contructor 
+                    //object actionType = Activator.CreateInstance(routeInfo.Action);
+                    Type actionType = routeInfo.Action;
+                    ConstructorInfo actionConstructor = actionType.GetConstructor(Type.EmptyTypes);
+                    object actionClassObject = actionConstructor.Invoke(new object[] { });
+
+                    object[] parametters = new object[] { };
+                    foreach (var param in routeInfo.ParameterInfos)
+                    {
+                        parametters.Append(param);
+                    }
+
+                    object actionValue = routeInfo.Method.Invoke(actionType, parametters);
+                }
+                catch(Exception ex)
+                {
+
+                }
+            }
             //var genericArgs = GetDynamicRouteHandlerGenericArgs(routeResult.Handler.GetType());
 
             //MethodInfo method = typeof(ClassActions).GetMethod("DispatchToHandler",
@@ -94,7 +127,7 @@ namespace SimpleHttpServer
                                 //case: start with '/'
                                 if (routeAttribute.Route.StartsWith('/'))
                                 {
-                                    RouteActioner.BuildRouter(baseRoute, method, out routeInfo, routeAttribute);
+                                    RouteActioner.BuildRouter(string.Empty, method, out routeInfo, routeAttribute);
                                     RouteDictionary.Add(routeInfo.AbsoluteUrl, routeInfo);
                                     continue;
                                 }

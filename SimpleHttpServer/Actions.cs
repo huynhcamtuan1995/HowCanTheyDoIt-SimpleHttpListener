@@ -20,6 +20,12 @@ namespace SimpleHttpServer
         {
             return new object();
         }
+
+        [Route(route: "/api/{t4em}/{a}/{abc}")]
+        public object MethodAAAA(string abc, string t4em)
+        {
+            return new object();
+        }
     }
 
     //class BTestAction : IRouteHandler
