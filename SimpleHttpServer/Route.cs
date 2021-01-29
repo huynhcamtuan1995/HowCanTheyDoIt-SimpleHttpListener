@@ -50,7 +50,7 @@ namespace SimpleHttpServer
                 var param = method.GetParameters()
                     .Select(x => x.Name)
                     .ToArray();
-                routeInfo.ParameterInfos = segmentUrl.Select(x => Array.FindIndex(param, p => $"{{{p}}}" == x)).ToArray();
+                routeInfo.ParamSegments = segmentUrl.Select(x => Array.FindIndex(param, p => $"{{{p}}}" == x)).ToArray();
             }
 
             routeInfo.AbsoluteUrl = $"^{absoluteUrl}$";
@@ -59,15 +59,6 @@ namespace SimpleHttpServer
             routeInfo.HttpVers = attribute != null
                 ? attribute.HttpVerb
                 : HttpMethod.GET;
-        }
-
-    }
-
-    public class MethodActioner
-    {
-        public bool IsUrlMatch(string baseRoute, string requestUrl, string httpMethod)
-        {
-            return false;
         }
 
     }

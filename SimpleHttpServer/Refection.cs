@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -8,10 +9,10 @@ using System.Text.RegularExpressions;
 
 namespace SimpleHttpServer
 {
-    public static class Refection
+    public static class Reflection
     {
-        private static Dictionary<string, Type> FunctionDictionary = new Dictionary<string, Type>();
-        private static Dictionary<string, RouteInfo> RouteDictionary = new Dictionary<string, RouteInfo>();
+        public static Dictionary<string, Type> FunctionDictionary { get; private set; } = new Dictionary<string, Type>();
+        public static Dictionary<string, RouteInfo> RouteDictionary { get; private set; } = new Dictionary<string, RouteInfo>();
         public static void RegisterFunctions()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -37,52 +38,6 @@ namespace SimpleHttpServer
                 function.Execute();
                 function.GetResponse(out response);
             }
-        }
-
-        public static void ProgressRequest(HttpListenerRequest request)
-        {
-            //Match matche;
-            //RouteInfo routeInfo = RouteDictionary.FirstOrDefault(x => 
-            //    {
-            //        matche = Regex.Match(request.Url.AbsolutePath, x.Key);
-            //        return matche.Success;
-            //    }).Value;
-
-            RouteInfo routeInfo = RouteDictionary.FirstOrDefault(x => Regex.IsMatch(request.Url.AbsolutePath, x.Key)).Value;
-
-            if (routeInfo != null && request.HttpMethod == routeInfo.HttpVers.ToString())
-            {
-                try
-                {
-                    //style: with out invoke contructor 
-                    //object actionType = Activator.CreateInstance(routeInfo.Action);
-                    Type actionType = routeInfo.Action;
-                    ConstructorInfo actionConstructor = actionType.GetConstructor(Type.EmptyTypes);
-                    object actionClassObject = actionConstructor.Invoke(new object[] { });
-
-                    object[] parametters = new object[] { };
-                    foreach (var param in routeInfo.ParameterInfos)
-                    {
-                        parametters.Append(param);
-                    }
-
-                    object actionValue = routeInfo.Method.Invoke(actionType, parametters);
-                }
-                catch(Exception ex)
-                {
-
-                }
-            }
-            //var genericArgs = GetDynamicRouteHandlerGenericArgs(routeResult.Handler.GetType());
-
-            //MethodInfo method = typeof(ClassActions).GetMethod("DispatchToHandler",
-            //    BindingFlags.NonPublic | BindingFlags.Instance);
-
-            //MethodInfo generic = method.MakeGenericMethod(genericArgs[0], genericArgs[1]);
-            //result = await (Task<bool>)generic.Invoke(this, new object[]
-            //{
-            //    context, routeResult.Handler, httpMethod, url
-            //});
         }
 
         public static void RegisterRoutes()

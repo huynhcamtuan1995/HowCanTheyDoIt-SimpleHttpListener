@@ -24,7 +24,7 @@ namespace SimpleHttpServer
         [Route(route: "/api/{t4em}/{a}/{abc}")]
         public object MethodAAAA(string abc, string t4em)
         {
-            return new object();
+            return new string[] { abc, t4em };
         }
     }
 

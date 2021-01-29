@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace SimpleHttpServer
 {
@@ -54,11 +55,17 @@ namespace SimpleHttpServer
                 //    runServer = false;
                 //}
 
-                //todo
-                Refection.ProgressRequest(req);
+                if (Regex.IsMatch(req.Url.AbsolutePath, @"^/$"))
+                {
 
-                // Write out to the response stream (asynchronously), then close it
-                await ParseContext.WriteData(req, resp);
+                    await HandleContext.ExecuteRequest(req, resp);
+                }
+                else
+                {
+                    await HandleContext.ProgressRequest(req, resp);
+
+                }
+
                 resp.Close();
             }
         }
@@ -72,8 +79,8 @@ namespace SimpleHttpServer
             Console.WriteLine("Listening for connections on {0}", url);
 
             //Register refection
-            Refection.RegisterFunctions();
-            Refection.RegisterRoutes();
+            Reflection.RegisterFunctions();
+            Reflection.RegisterRoutes();
 
             // Handle requests
             Task listenTask = HandleIncomingConnections();
