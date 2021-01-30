@@ -71,9 +71,10 @@ namespace SimpleHttpServer
                     ConstructorInfo actionConstructor = actionType.GetConstructor(Type.EmptyTypes);
                     object actionClassObject = actionConstructor.Invoke(new object[] { });
 
-                    object[] parametters = new object[routeInfo.Method.GetParameters().Count()];
-                    string[] segmentUrl = request.Url.AbsolutePath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    string[] segmentUrl = request.Url.AbsolutePath
+                        .Split('/', StringSplitOptions.RemoveEmptyEntries);
 
+                    object[] parametters = new object[routeInfo.ParamNames.Count()];
                     int index = 0;
                     foreach (var param in routeInfo.ParamSegments)
                     {
@@ -81,7 +82,21 @@ namespace SimpleHttpServer
                         {
                             parametters[param] = segmentUrl[index];
                         }
-                        ++index;
+                        index++;
+                    }
+
+                    string[] segmentQuery = request.Url.Query.TrimStart('?')
+                        .Split('&', StringSplitOptions.RemoveEmptyEntries);
+                    if (segmentQuery.Count() > 0)
+                    {
+                        for (int i = 0; i < parametters.Count(); i++)
+                        {
+                            if (parametters[i] == null &&
+                                RouteActioner.IsExistParametter(segmentQuery, routeInfo.ParamNames[i], out object queryValue))
+                            {
+                                parametters[i] = queryValue;
+                            }
+                        }
                     }
 
                     object actionValue = routeInfo.Method.Invoke(actionClassObject, parametters);

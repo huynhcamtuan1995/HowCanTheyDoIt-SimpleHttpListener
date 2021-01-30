@@ -7,11 +7,8 @@ namespace SimpleHttpServer
 {
     public class RequestModel
     {
-
         public string Function { get; set; }
-
         public string Data { get; set; }
-
         public string HashString { get; set; }
     }
     public class ResponseModel
@@ -30,13 +27,10 @@ namespace SimpleHttpServer
     public class RouteInfo
     {
         public Type Action { get; set; }
-
         public MethodInfo Method { get; set; }
-
         public HttpMethod HttpVers { get; set; }
-
         public int[] ParamSegments { get; set; }
-
+        public string[] ParamNames { get; set; }
         public string AbsoluteUrl { get; set; }
     }
 }
