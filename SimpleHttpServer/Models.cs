@@ -29,7 +29,7 @@ namespace SimpleHttpServer
         public Type Action { get; set; }
         public MethodInfo Method { get; set; }
         public HttpMethod HttpVers { get; set; }
-        public int[] ParamSegments { get; set; }
+        public int[] ParamSegments { get; set; } = new int[] { };
         public string[] ParamNames { get; set; }
         public string AbsoluteUrl { get; set; }
     }

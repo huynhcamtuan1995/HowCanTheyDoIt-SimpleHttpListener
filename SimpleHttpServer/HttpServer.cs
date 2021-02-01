@@ -62,7 +62,8 @@ namespace SimpleHttpServer
                 }
                 else
                 {
-                    await HandleContext.ProgressRequest(req, resp);
+                    HandleContextV2.ExecuteRequest(req, resp);
+                    //await HandleContext.ProgressRequest(req, resp);
 
                 }
 

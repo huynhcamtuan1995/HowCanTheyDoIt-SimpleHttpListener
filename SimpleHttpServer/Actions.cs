@@ -2,7 +2,7 @@
 
 namespace SimpleHttpServer
 {
-    [RouteBase("test")]
+    //[RouteBase("test")]
     class ATestAction : IRouteHandler
     {
         [Route(httpVerb: HttpMethod.POST)]
@@ -15,10 +15,10 @@ namespace SimpleHttpServer
         {
             return new object();
         }
-        [Route(route: "/abc")]
-        public object MethodAAA()
+        [Route(route: "abc/method")]
+        public object MethodAAA(string abc, string t4em)
         {
-            return new object();
+            return new string[] { abc, t4em };
         }
 
         [Route(route: "/api/{yyy}/{a}/{abc}")]
