@@ -4,6 +4,7 @@ using System.Collections.Generic;
 namespace SimpleHttpServer
 {
     [RouteBase("test")]
+    [RouteBase("api")]
     class ATestAction : IRouteHandler
     {
         [Route(httpVerb: HttpMethod.POST)]
@@ -35,26 +36,26 @@ namespace SimpleHttpServer
         }
     }
 
-    //class BTestAction : IRouteHandler
-    //{
-    //    [Route(httpVerb: HttpMethod.POST, route: "B/test")]
-    //    public object MethodB()
-    //    {
-    //        return new object();
-    //    }
+    class BTestAction : IRouteHandler
+    {
+        [Route(httpVerb: HttpMethod.POST, route: "B/test")]
+        public object MethodB()
+        {
+            return new object();
+        }
 
-    //    public object MethodBB()
-    //    {
-    //        return new object();
-    //    }
-    //}
+        public object MethodBB()
+        {
+            return new object();
+        }
+    }
 
-    //[RouteBase("Test")]
-    //class CTestAction : IRouteHandler
-    //{
-    //    public object MethodC()
-    //    {
-    //        return new object();
-    //    }
-    //}
+    [RouteBase("Test")]
+    class CTestAction : IRouteHandler
+    {
+        public object MethodC()
+        {
+            return new object();
+        }
+    }
 }

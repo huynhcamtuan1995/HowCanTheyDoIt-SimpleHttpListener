@@ -61,7 +61,7 @@ namespace SimpleHttpServer
                         .ToArray();
                     if (baseRoutes.Length == 0)
                     {
-                        baseRoutes.Append(typeName);
+                        baseRoutes = new string[] { typeName };
                     }
 
                     foreach (string baseRoute in baseRoutes)
@@ -71,24 +71,25 @@ namespace SimpleHttpServer
                             RouteAttribute[] routeAttributes =
                                 method.GetCustomAttributes<RouteAttribute>().ToArray();
 
+                            RouteInfo routeInfo = null;
                             if (routeAttributes.Length == 0)
                             {
-                                RouteActioner.BuildRouter(baseRoute, method, out RouteInfo routeInfo);
-                                RouteDictionary.Add(routeInfo.AbsoluteUrl, routeInfo);
+                                RouteActioner.BuildRouter(baseRoute, method, ref routeInfo);
+                                RouteDictionary.Add($"{routeInfo.AbsoluteUrl}_{Guid.NewGuid().ToString("N")}", routeInfo);
+                                continue;
                             }
                             foreach (RouteAttribute routeAttribute in routeAttributes)
                             {
-                                RouteInfo routeInfo = new RouteInfo();
                                 //case: start with '/'
                                 if (routeAttribute.Route.StartsWith('/'))
                                 {
-                                    RouteActioner.BuildRouter(string.Empty, method, out routeInfo, routeAttribute);
-                                    RouteDictionary.Add(routeInfo.AbsoluteUrl, routeInfo);
+                                    RouteActioner.BuildRouter(string.Empty, method, ref routeInfo, routeAttribute);
+                                    RouteDictionary.Add($"{routeInfo.AbsoluteUrl}_{Guid.NewGuid().ToString("N")}", routeInfo);
                                     continue;
                                 }
 
-                                RouteActioner.BuildRouter(baseRoute, method, out routeInfo, routeAttribute);
-                                RouteDictionary.Add(routeInfo.AbsoluteUrl, routeInfo);
+                                RouteActioner.BuildRouter(baseRoute, method, ref routeInfo, routeAttribute);
+                                RouteDictionary.Add($"{routeInfo.AbsoluteUrl}_{Guid.NewGuid().ToString("N")}", routeInfo);
                             }
                         }
                     }

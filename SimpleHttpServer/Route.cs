@@ -30,7 +30,7 @@ namespace SimpleHttpServer
 
      
 
-        public static void BuildRouter(string baseRoute, MethodInfo method, out RouteInfo routeInfo, RouteAttribute attribute = null)
+        public static void BuildRouter(string baseRoute, MethodInfo method, ref RouteInfo routeInfo, RouteAttribute attribute = null)
         {
             routeInfo = new RouteInfo();
             string restPart = attribute != null && !string.IsNullOrWhiteSpace(attribute.Route)
