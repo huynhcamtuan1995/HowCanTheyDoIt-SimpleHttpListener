@@ -54,13 +54,12 @@ namespace SimpleHttpServer
                 if (!RouteActioner.IsEmptyMethodClass(type, out MethodInfo[] methodInfos))
                 {
                     string typeName = Regex.Replace(type.Name, @"(Action)\z", string.Empty);
-                    string[] baseRoutes = (string[])((RouteBaseAttribute[])type
-                        .GetCustomAttributes(typeof(RouteBaseAttribute)))
+                    string[] baseRoutes = type.GetCustomAttributes<RouteBaseAttribute>()
                         .ToList()
                         .Where(x => !string.IsNullOrWhiteSpace(x.UrlBase))
                         .Select(x => x.UrlBase)
                         .ToArray();
-                    if (baseRoutes.Count() == 0)
+                    if (baseRoutes.Length == 0)
                     {
                         baseRoutes.Append(typeName);
                     }
@@ -70,9 +69,9 @@ namespace SimpleHttpServer
                         foreach (MethodInfo method in methodInfos)
                         {
                             RouteAttribute[] routeAttributes =
-                                (RouteAttribute[])method.GetCustomAttributes(typeof(RouteAttribute));
+                                method.GetCustomAttributes<RouteAttribute>().ToArray();
 
-                            if (routeAttributes.Count() == 0)
+                            if (routeAttributes.Length == 0)
                             {
                                 RouteActioner.BuildRouter(baseRoute, method, out RouteInfo routeInfo);
                                 RouteDictionary.Add(routeInfo.AbsoluteUrl, routeInfo);

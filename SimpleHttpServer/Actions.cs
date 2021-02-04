@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleHttpServer
 {
@@ -25,6 +26,12 @@ namespace SimpleHttpServer
         public object MethodAAAA(string abc, string t4em)
         {
             return new string[] { abc, t4em };
+        }
+
+        [Route(route: "api/{param1}/{param2}", HttpMethod.POST)]
+        public object MethodAAAAA(string param1, RequestInfo request)
+        {
+            return new List<object>(){ param1, request };
         }
     }
 

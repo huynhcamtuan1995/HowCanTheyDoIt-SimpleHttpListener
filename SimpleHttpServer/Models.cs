@@ -30,5 +30,12 @@ namespace SimpleHttpServer
         public int[] ParamSegments { get; set; } = new int[] { };
         public string[] ParamNames { get; set; }
         public string AbsoluteUrl { get; set; }
+        public string BodyParametter { get; set; }
+    }
+
+    public class RequestInfo
+    {
+        public string test1 { get; set; }
+        public string test2 { get; set; }
     }
 }

@@ -14,6 +14,13 @@ namespace SimpleHttpServer
         protected static bool OutputResponse(object actionValue, HttpListenerRequest request, HttpListenerResponse response)
         {
             ResponseModel responseModel = new ResponseModel();
+            if(actionValue == null)
+            {
+                responseModel.Code = (int)HttpStatusCode.BadRequest;
+                responseModel.Description = $"{nameof(HttpStatusCode.BadRequest)}";
+                responseModel.Data = JsonConvert.SerializeObject(actionValue);
+            }
+
             responseModel.Code = (int)HttpStatusCode.OK;
             responseModel.Description = $"{nameof(HttpStatusCode.OK)}";
             responseModel.Data = JsonConvert.SerializeObject(actionValue);

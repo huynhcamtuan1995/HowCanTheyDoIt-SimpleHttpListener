@@ -21,7 +21,7 @@ namespace SimpleHttpServer
         public static bool IsEmptyMethodClass(Type type, out MethodInfo[] methodInfos)
         {
             methodInfos = (MethodInfo[])type.GetMethods().Where(x => x.DeclaringType.Name == type.Name).ToArray();
-            if (methodInfos.Count() == 0)
+            if (methodInfos.Length == 0)
             {
                 return true;
             }
@@ -58,7 +58,12 @@ namespace SimpleHttpServer
             routeInfo.AbsoluteUrl = $"^{absoluteUrl}$";
             routeInfo.Action = method.DeclaringType;
             routeInfo.Method = method;
-            routeInfo.ParamNames = method.GetParameters().Select(x => x.Name.ToLower()).ToArray();
+
+            ParameterInfo[] parameters = method.GetParameters();
+
+            routeInfo.ParamNames = parameters.Select(x => x.Name.ToLower()).ToArray();
+            routeInfo.BodyParametter = parameters.FirstOrDefault(x => x.ParameterType != typeof(string))?.ParameterType.FullName;
+
             routeInfo.HttpVers = attribute != null
                 ? attribute.HttpVerb
                 : HttpMethod.GET;

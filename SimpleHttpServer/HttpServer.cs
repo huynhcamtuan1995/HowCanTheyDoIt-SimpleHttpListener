@@ -62,9 +62,9 @@ namespace SimpleHttpServer
                 }
                 else
                 {
-                    await HandleRequestV2.ExecuteRequest(req, resp);
+                    //await HandleRequestV2.ExecuteRequest(req, resp);
 
-                    //await HandleContext.ExecuteRequest(req, resp);
+                    await HandleRequest.ExecuteRequest(req, resp);
                 }
 
                 resp.Close();
