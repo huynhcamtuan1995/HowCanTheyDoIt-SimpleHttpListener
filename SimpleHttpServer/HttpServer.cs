@@ -58,13 +58,13 @@ namespace SimpleHttpServer
                 if (Regex.IsMatch(req.Url.AbsolutePath, @"^/$"))
                 {
 
-                    await HandleContext.ExecuteRequest(req, resp);
+                    await HandleFunction.ExecuteFunction(req, resp);
                 }
                 else
                 {
-                    HandleContextV2.ExecuteRequest(req, resp);
-                    //await HandleContext.ProgressRequest(req, resp);
+                    await HandleRequestV2.ExecuteRequest(req, resp);
 
+                    //await HandleContext.ExecuteRequest(req, resp);
                 }
 
                 resp.Close();

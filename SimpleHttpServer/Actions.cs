@@ -2,7 +2,7 @@
 
 namespace SimpleHttpServer
 {
-    //[RouteBase("test")]
+    [RouteBase("test")]
     class ATestAction : IRouteHandler
     {
         [Route(httpVerb: HttpMethod.POST)]

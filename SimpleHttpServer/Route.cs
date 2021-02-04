@@ -28,21 +28,7 @@ namespace SimpleHttpServer
             return false;
         }
 
-        public static bool IsExistParametter(string[] segmentQuery, string paramName, out object paramValue)
-        {
-            paramValue = null;
-            foreach (var query in segmentQuery)
-            {
-                var split = query.Split('=', 2);
-                if (split[0].ToLower() == paramName.ToLower())
-                {
-                    paramValue = split[1];
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
+     
 
         public static void BuildRouter(string baseRoute, MethodInfo method, out RouteInfo routeInfo, RouteAttribute attribute = null)
         {

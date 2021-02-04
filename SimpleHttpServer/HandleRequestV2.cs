@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace SimpleHttpServer
 {
-    public static class HandleContextV2
+    public class HandleRequestV2 :  HandleBase
     {
-        public static bool ExecuteRequest(HttpListenerRequest request, HttpListenerResponse response)
+        public static async Task ExecuteRequest(HttpListenerRequest request, HttpListenerResponse response)
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             List<Type> types = assembly.GetTypes()
@@ -24,13 +24,16 @@ namespace SimpleHttpServer
                        .Split('&', StringSplitOptions.RemoveEmptyEntries);
 
             string url = request.Url.AbsolutePath.TrimEnd('/');
-            MethodInfo[] methods = types.SelectMany(x => x.GetMethods().Where(y => y.DeclaringType.Name == x.Name)).ToArray();
+            MethodInfo[] methods = types.SelectMany(x => x.GetMethods()
+                .Where(y => y.DeclaringType.Name == x.Name))
+                .ToArray();
             RouteAttribute[] absoluteRoutes = methods
                 .SelectMany(x => (RouteAttribute[])x.GetCustomAttributes(typeof(RouteAttribute)))
                 .ToList()
                 .Where(y => y.Route.StartsWith('/'))
                 .ToArray();
 
+            //have absolute routes, etc: /test/this/is/route/method ...
             if (absoluteRoutes.Count() > 0)
             {
                 RouteAttribute route = absoluteRoutes.FirstOrDefault(x => x.Route.TrimEnd('/') == url);
@@ -42,11 +45,11 @@ namespace SimpleHttpServer
                         .Split('&', StringSplitOptions.RemoveEmptyEntries);
 
                     object[] parametters = new object[method.GetParameters().Count()];
-                    parametters = GetParametters(method, queries, parametters);
+                    parametters = ObtainParametters(method, queries, parametters);
                     object actionValue = ExecuteMethod(method, parametters);
 
-                    GetResponseModel(actionValue, request, response);
-                    return true;
+                    OutputResponse(actionValue, request, response);
+                    return;
                 }
                 else
                 {
@@ -76,70 +79,58 @@ namespace SimpleHttpServer
 
                             string[] queries = request.Url.Query.TrimStart('?')
                                 .Split('&', StringSplitOptions.RemoveEmptyEntries);
-                            parametters = GetParametters(method, queries, parametters);
+                            parametters = ObtainParametters(method, queries, parametters);
                             object actionValue = ExecuteMethod(method, parametters);
 
-                            GetResponseModel(actionValue, request, response);
-                            return true;
+                            OutputResponse(actionValue, request, response);
+                            return;
                         }
                     }
                 }
             }
 
+            //rest of route and basic method name(non-attribute) routes here, etc: test/this/is/route or non-attribute
             url = request.Url.AbsolutePath.TrimStart('/');
-            Type type = types.Find(type => 
+            Type type = types.Find(type =>
                 (((RouteBaseAttribute)type.GetCustomAttribute(typeof(RouteBaseAttribute)) != null &&
-                url.StartsWith(((RouteBaseAttribute)type.GetCustomAttribute(typeof(RouteBaseAttribute))).UrlBase)) ||
-                url.StartsWith(Regex.Replace(type.Name, @"(Action)\z", string.Empty))));
+                 url.StartsWith(((RouteBaseAttribute)type.GetCustomAttribute(typeof(RouteBaseAttribute))).UrlBase)) ||
+                 url.StartsWith(Regex.Replace(type.Name, @"(Action)\z", string.Empty))));
+
+            if (type == null)
+            {
+                //not found type class
+                return;
+            }
+            string matchBaseRoute = type.GetCustomAttributes(typeof(RouteBaseAttribute)).Count() > 0
+                ? ((RouteBaseAttribute)type.GetCustomAttributes(typeof(RouteBaseAttribute))
+                    .First(x => url.StartsWith(((RouteBaseAttribute)x).UrlBase))).UrlBase
+                : Regex.Replace(type.Name, @"(Action)\z", string.Empty);
+
+            string restPartRoute = Regex.Replace(url, $@"^{matchBaseRoute}", string.Empty);
 
             methods = type.GetMethods().Where(x => x.DeclaringType.Name == type.Name).ToArray();
+            //MethodInfo methodInfo = methods.ToList().Find(x =>
+            //    ((RouteAttribute)x.GetCustomAttribute(typeof(RouteAttribute)) != null &&
+            //     ((RouteAttribute[])x.GetCustomAttributes(typeof(RouteAttribute)))
+            //        .FirstOrDefault(y => y.Route.StartsWith('/') == false &&
+            //            $"{matchBaseRoute}/{y.Route}" == url) != null));
 
-            return true;
-        }
-
-        private static bool GetResponseModel(object actionValue, HttpListenerRequest request, HttpListenerResponse response)
-        {
-            ResponseModel responseModel = new ResponseModel
+            foreach (var method in methods)
             {
-                Code = (int)HttpStatusCode.OK,
-                Description = $"{nameof(HttpStatusCode.OK)}",
-                Data = JsonConvert.SerializeObject(actionValue)
-            };
-
-            byte[] data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(responseModel));
-            response.ContentType = request.ContentType;
-            response.ContentEncoding = Encoding.UTF8;
-            response.ContentLength64 = data.LongLength;
-
-            response.OutputStream.Write(data, 0, data.Length);
-
-            return true;
-        }
-
-        private static object[] GetParametters(MethodInfo method, string[] queries, object[] parametters)
-        {
-            foreach (var query in queries)
-            {
-                var split = query.Split('=', 2);
-                var index = method.GetParameters()
-                    .ToList()
-                    .FindIndex(x => x.Name.ToLower() == split[0].ToLower());
-                if (index >= 0)
+                //found absolute route
+                if (method != null)
                 {
-                    parametters[index] = split[1];
+
+                }
+                else //maybe contain {params} route
+                {
+
                 }
             }
-            return parametters;
-        }
+            string matchMethodRoute = string.Empty;
 
-        private static object ExecuteMethod(MethodInfo method, params object[] parametters)
-        {
-            Type actionType = method.DeclaringType;
-            ConstructorInfo actionConstructor = actionType.GetConstructor(Type.EmptyTypes);
-            object actionClassObject = actionConstructor.Invoke(new object[] { });
 
-            object actionValue = method.Invoke(actionClassObject, parametters);
-            return actionValue;
+            return;
         }
     }
 }
