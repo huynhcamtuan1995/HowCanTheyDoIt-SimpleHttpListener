@@ -12,8 +12,11 @@ namespace SimpleHttpServer
 {
     public static class Reflection
     {
-        public static Dictionary<string, Type> FunctionDictionary { get; private set; } = new Dictionary<string, Type>();
-        public static Dictionary<string, RouteInfo> RouteDictionary { get; private set; } = new Dictionary<string, RouteInfo>();
+        public static Dictionary<string, Type> FunctionRegisted { get; private set; } = new Dictionary<string, Type>();
+
+        public static HashSet<RouteInfo> RouteRegistered { get; private set; } = new HashSet<RouteInfo>();
+        //public static Dictionary<string, RouteInfo> RouteRegistered { get; private set; } = new Dictionary<string, RouteInfo>();
+
         public static void RegisterFunctions()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -23,7 +26,7 @@ namespace SimpleHttpServer
             foreach (Type type in listFunctions)
             {
                 string key = Regex.Replace(type.Name, @"(Function)\z", string.Empty);
-                FunctionDictionary.Add(key, type);
+                FunctionRegisted.Add(key, type);
                 //LogController.LogInfo(string.Format(ResourceEnum.FunctionLoaded, name));
             }
         }
@@ -31,10 +34,10 @@ namespace SimpleHttpServer
         public static void Execute(RequestModel request, out ResponseModel response)
         {
             response = new ResponseModel();
-            if (FunctionDictionary.ContainsKey(request.Function))
+            if (FunctionRegisted.ContainsKey(request.Function))
             {
                 BaseFunction function =
-                    (BaseFunction)Activator.CreateInstance(FunctionDictionary[request.Function]);
+                    (BaseFunction)Activator.CreateInstance(FunctionRegisted[request.Function]);
                 function.Initialize(request);
                 function.Execute();
                 function.GetResponse(out response);
@@ -75,7 +78,7 @@ namespace SimpleHttpServer
                             if (routeAttributes.Length == 0)
                             {
                                 RouteActioner.BuildRouter(baseRoute, method, ref routeInfo);
-                                RouteDictionary.Add($"{routeInfo.AbsoluteUrl}_{Guid.NewGuid().ToString("N")}", routeInfo);
+                                RouteRegistered.Add(routeInfo);
                                 continue;
                             }
                             foreach (RouteAttribute routeAttribute in routeAttributes)
@@ -84,12 +87,12 @@ namespace SimpleHttpServer
                                 if (routeAttribute.Route.StartsWith('/'))
                                 {
                                     RouteActioner.BuildRouter(string.Empty, method, ref routeInfo, routeAttribute);
-                                    RouteDictionary.Add($"{routeInfo.AbsoluteUrl}_{Guid.NewGuid().ToString("N")}", routeInfo);
+                                    RouteRegistered.Add(routeInfo);
                                     continue;
                                 }
 
                                 RouteActioner.BuildRouter(baseRoute, method, ref routeInfo, routeAttribute);
-                                RouteDictionary.Add($"{routeInfo.AbsoluteUrl}_{Guid.NewGuid().ToString("N")}", routeInfo);
+                                RouteRegistered.Add(routeInfo);
                             }
                         }
                     }

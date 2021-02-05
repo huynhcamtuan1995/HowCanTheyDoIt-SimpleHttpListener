@@ -14,10 +14,10 @@ namespace SimpleHttpServer
     {
         public static async Task ExecuteRequest(HttpListenerRequest request, HttpListenerResponse response)
         {
-            RouteInfo routeInfo = Reflection.RouteDictionary
+            RouteInfo routeInfo = Reflection.RouteRegistered
                 .FirstOrDefault(x => Regex.IsMatch(request.Url.AbsolutePath,
-                    Regex.Replace(x.Key, @"(?<=\$).+", string.Empty)) &&
-                        x.Value.HttpVers.ToString() == request.HttpMethod).Value;
+                    Regex.Replace(x.AbsoluteUrl, @"(?<=\$).+", string.Empty)) &&
+                        x.HttpVers.ToString() == request.HttpMethod);
 
             try
             {
